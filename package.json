@@ -1,0 +1,27 @@
+{
+  "name": "articlescraper",
+  "version": "1.0.0",
+  "description": "scraping articles from site to display to user. save articles and write notes about them.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Livingnight/articleScraper.git"
+  },
+  "author": "Jay Jernigan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Livingnight/articleScraper/issues"
+  },
+  "homepage": "https://github.com/Livingnight/articleScraper#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^5.1.5",
+    "request": "^2.87.0"
+  }
+}

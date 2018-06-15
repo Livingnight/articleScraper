@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const articleSchema = new mongoose.Schema({
+const Schema = mongoose.Schema;
+const ArticleSchema = new Schema({
     headline: {
         type: String,
         unique: true,
@@ -16,7 +17,7 @@ const articleSchema = new mongoose.Schema({
     picture: {
         type: String
     },
-    save: {
+    saved: {
         type: Boolean,
         default: false
     },
@@ -26,4 +27,4 @@ const articleSchema = new mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model('Article', articleSchema);
+module.exports = mongoose.model('Article', ArticleSchema);

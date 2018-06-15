@@ -1,0 +1,43 @@
+.jumbotron{
+    background-image: url("../images/libraryImage.jpeg");
+    background-size: cover;
+    height: 500px;
+}
+#jumbo-text{
+    color: white;
+    line-height: 350px;
+    font-size: 100px;
+}
+.articleContainer{
+    background-image: url("../images/newspaper.jpg");
+    /*background-size: cover;*/
+    background-repeat: repeat;
+    /*height: 100%;*/
+}
+#picture{
+    margin: 0 auto;
+}
+#buttons{
+    margin: 0 auto;
+}
+.btn-success{
+    background: orange;
+}
+.btn-success:hover{
+    background: yellow;
+}
+.card-header{
+    background: blue;
+}
+.card-body{
+    background: gray;
+}
+.card-header a{
+    color: orange;
+}
+.card-header a:hover{
+    color: yellow;
+}
+.card {
+    margin-bottom: 10px;
+}

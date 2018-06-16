@@ -31,7 +31,10 @@ router.get('/api/scrape', (req, res) => {
                     picture: picture
                 }, (err, inserted) => {
                     if(err) console.error(err);
-                    else console.log(inserted);
+                    else {
+                        console.log(inserted);
+                        res.json(inserted);
+                    }
                 });
             }
         });
@@ -51,11 +54,21 @@ router.get('/', (req, res) => {
         })
 
 });
-router.get('/api/scrape', (req, res)=>{
-
+router.get('/api/notes', (req, res) => {
+    db.Article.find({_id: req.body.id})
+        .populate('note')
+        .then(dbArticle => {
+            console.log(dbArticle);
+        res.json(dbArticle.notes)
+    })
+});
+router.post('/api/notes', (req, res) => {
+    db.Article.findOneAndUpdate({_id: req.body.id}, {$push: {notes: req.body.noteText}});
+    res.json('note added');
 });
 
-router.put('/api/article:_id', (req, res) => {
+
+router.put('/api/article/:_id', (req, res) => {
     db.Article.update(
         {
         _id: req.params._id
@@ -64,15 +77,30 @@ router.put('/api/article:_id', (req, res) => {
             $set:{'saved': req.body.saved}
         }, (err, updated) => {
             if (err) console.error(err);
-            else console.log(updated);
+            else {
+                console.log(updated);
+                res.json(updated);
+            }
         })
     });
 
 router.delete('/api/article:_id', (req, res) =>{
-    db.Article.deleteOne({_id: req.params._id})
+    db.Article.deleteOne({_id: req.params._id}, )
 });
 
 router.get('/saved', (req, res) => {
-    res.render('saved');
+    db.Article.find({}).sort({_id: -1}).then(dbArticles => {
+        const articleObjInfo = {
+            article: dbArticles
+        };
+        res.render('saved', articleObjInfo);
+
+    });
+});
+
+router.post('/api/notes', (req, res) => {
+    db.Article.insert({noteText:req.body.note}).then( note => {
+        res.json(note);
+    })
 });
 module.exports = router;

@@ -19,14 +19,15 @@
         </div>
     </div>
 </div>
-<div class="container-fluid articleContainer">
+
+<div class="container articleContainer">
     {{#each article}}
         {{#unless saved}}
-            <div class="card" data-id="{{_id}}">
+            <div class="card" >
                 <div class="card-header">
                     <h1 class="text-center float-left"><a href="{{url}}" target="_blank">{{headline}}</a></h1>
                     <div id="buttons">
-                        <a class="btn btn-success float-right save-btn">Save Article</a>
+                        <a class="btn btn-success float-right save-btn" data-id="{{_id}}">Save Article</a>
                     </div>
                 </div>
                 <div class="card-body">

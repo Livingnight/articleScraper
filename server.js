@@ -25,12 +25,11 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 app.use(htmlRoutes);
-app.use(apiRoutes);
-mongoose.connect(MONGODB_URI);
-    // , err =>{
-    // if(err) console.error(err);
-    // else {console.log(`Database connnected!`);}
-// });
+// app.use(apiRoutes);
+mongoose.connect(MONGODB_URI, err =>{
+    if(err) console.error(err);
+    else {console.log(`Database connnected!`);}
+});
 app.listen(PORT, err => {
 
     if (err) console.error(err);

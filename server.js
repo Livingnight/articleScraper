@@ -11,7 +11,7 @@ const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 
-const MONGODB_URI = process.env.MONGDB_URI || "mongodb://localhost/articles_db";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/articles_db";
 mongoose.Promise = Promise;
 
 const PORT = process.env.PORT || 5000;

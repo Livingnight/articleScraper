@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 const router = express.Router();
 
 const db = require('../models');
-router.get('/scrape', (req, res) => {
+router.get('/api/scrape', (req, res) => {
     console.log('route working');
     request('https://www.npr.org/sections/news/', (error, response, html) => {
         if (error) return console.log(error);
@@ -19,9 +19,9 @@ router.get('/scrape', (req, res) => {
             const summary = $(element).children('.teaser').first().text();
             const picture = $(element).prev().children('.imagewrap').children('a').children('img').attr('src');
 
-            console.log(`headline: ${headline}, 
-                url: ${url}, 
-                summary: ${summary}, 
+            console.log(`headline: ${headline},
+                url: ${url},
+                summary: ${summary},
                 picture: ${picture}`);
             if(headline && url && summary && picture){
                 db.Article.create({
@@ -36,20 +36,40 @@ router.get('/scrape', (req, res) => {
             }
         });
     });
-    res.send('scrape complete');
+    // res.send('scrape complete');
 
 });
 
 router.get('/', (req, res) => {
-    db.Article.find({})
+    db.Article.find({}).sort({_id: -1})
         .then( dbArticles => {
             const articleInfoObj = {
                 article: dbArticles
             };
-            console.log(articleInfoObj);
+            // console.log(articleInfoObj);
             res.render('home', articleInfoObj);
         })
 
+});
+router.get('/api/scrape', (req, res)=>{
+
+});
+
+router.put('/api/article:_id', (req, res) => {
+    db.Article.update(
+        {
+        _id: req.params._id
+    },
+        {
+            $set:{'saved': req.body.saved}
+        }, (err, updated) => {
+            if (err) console.error(err);
+            else console.log(updated);
+        })
+    });
+
+router.delete('/api/article:_id', (req, res) =>{
+    db.Article.deleteOne({_id: req.params._id})
 });
 
 router.get('/saved', (req, res) => {

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const NoteSchema = new Schema({
-    text: {
+    noteText: {
         type: String
         // required: 'Text is required'
     }

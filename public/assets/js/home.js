@@ -53,36 +53,60 @@ $(document).ready(() => {
     });
     $(document).on('click', '.note-btn', function (e) {
         const id = $(this).attr('data-id');
+        const data = {
+            _id: id
+        };
+        console.log(`data: ${JSON.stringify(data)}`);
         $.ajax({
-            url: '/api/notes',
+            url: `/api/notes/${id}`,
             method: 'GET',
-            data: {_id: id}
+            data: data
         }).then(notes => {
-            console.log(notes);
+            $('#saveNote').attr('data-id', id);
+            // console.log(`Notes: ${JSON.stringify(notes)}`);
+            // console.log(`id: ${id}`);
+            const note_area = $('.saved-notes');
+            // console.log(`notes: ${notes}`);
             notes.forEach(note => {
-                $('.saved-notes')
-                    .append(
-                        `<p id="${note}">${note}</p>`
-                    );
+
+                console.log(`Note: ${JSON.stringify(note.notes)}`);
+                note.notes.forEach(id => {
+                    console.log(`id: ${JSON.stringify(id)}`);
+                    // note_area.empty();
+                    note_area
+                        .append(
+                            `<p id="${id._id}">${id.noteText}</p>`
+                        );
+                })
 
             })
-        });
+
+
+        }).catch(err => {
+            console.log(`Error is: ${err}`)
+        })
         $('#note-modal').modal('show');
 
     });
-    $(document).on('click', '#saveNote', function(e) {
-
+    $(document).on('click', '#saveNote', function (e) {
+        // console.log($('#noteInput').val());
         const data = {
-          _id: $(this).attr('data-id'),
-          noteText: $('#noteInput').text()
+            _id: $(this).attr('data-id'),
+            noteText: $('#noteInput').val()
         };
+        console.log(`data: ${JSON.stringify(data)}`);
         $.ajax({
             url: '/api/notes',
             method: 'POST',
             data: data
+        }).then(data => {
+            console.log('anything');
+            console.log(data);
+            location.reload();
+        }).catch(err => {
+            console.log(err);
         })
-    })
-
+    });
 
 
 });

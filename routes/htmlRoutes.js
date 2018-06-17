@@ -23,17 +23,17 @@ router.get('/api/scrape', (req, res) => {
                 url: ${url},
                 summary: ${summary},
                 picture: ${picture}`);
-            if(headline && url && summary && picture){
+            if (headline && url && summary && picture) {
                 db.Article.create({
                     headline: headline,
                     url: url,
                     summary: summary,
                     picture: picture
                 }, (err, inserted) => {
-                    if(err) console.error(err);
+                    if (err) console.error(err);
                     else {
                         console.log(inserted);
-                        res.json(inserted);
+                        // res.json(inserted);
                     }
                 });
             }
@@ -45,7 +45,7 @@ router.get('/api/scrape', (req, res) => {
 
 router.get('/', (req, res) => {
     db.Article.find({}).sort({_id: -1})
-        .then( dbArticles => {
+        .then(dbArticles => {
             const articleInfoObj = {
                 article: dbArticles
             };
@@ -54,27 +54,41 @@ router.get('/', (req, res) => {
         })
 
 });
-router.get('/api/notes', (req, res) => {
-    db.Article.find({_id: req.body.id})
-        .populate('note')
+router.get('/api/notes/:id', (req, res) => {
+    console.log(`id= : ${req.params.id}`)
+    db.Article.find({_id: req.params.id})
+        .populate('notes')
         .then(dbArticle => {
-            console.log(dbArticle);
-        res.json(dbArticle.notes)
+            console.log(dbArticle[0].notes);
+            res.json(dbArticle);
+        }).catch( err => {
+            console.log(`Error is: ${err}`);
     })
 });
 router.post('/api/notes', (req, res) => {
-    db.Article.findOneAndUpdate({_id: req.body.id}, {$push: {notes: req.body.noteText}});
-    res.json('note added');
-});
+    console.log(`id = ${req.body._id}`);
+    console.log(`text = ${req.body.noteText}`);
+    db.Note.create({noteText: req.body.noteText})
+        .then(dbNote => {
+            return db.Article.findOneAndUpdate({_id: req.body._id}, {$push: {notes: dbNote._id}}, {new: true})
+        })
+        .then(dbArticle => {
+            res.json(dbArticle);
+        }).catch(err => {
+        res.json(err);
+    });
+
+})
+
 
 
 router.put('/api/article/:_id', (req, res) => {
     db.Article.update(
         {
-        _id: req.params._id
-    },
+            _id: req.params._id
+        },
         {
-            $set:{'saved': req.body.saved}
+            $set: {'saved': req.body.saved}
         }, (err, updated) => {
             if (err) console.error(err);
             else {
@@ -82,10 +96,10 @@ router.put('/api/article/:_id', (req, res) => {
                 res.json(updated);
             }
         })
-    });
+});
 
-router.delete('/api/article:_id', (req, res) =>{
-    db.Article.deleteOne({_id: req.params._id}, )
+router.delete('/api/article:_id', (req, res) => {
+    db.Article.deleteOne({_id: req.params._id},)
 });
 
 router.get('/saved', (req, res) => {
@@ -98,9 +112,9 @@ router.get('/saved', (req, res) => {
     });
 });
 
-router.post('/api/notes', (req, res) => {
-    db.Article.insert({noteText:req.body.note}).then( note => {
-        res.json(note);
-    })
-});
+// router.post('/api/notes', (req, res) => {
+//     db.Article.insert({noteText: req.body.note}).then(note => {
+//         res.json(note);
+//     })
+// });
 module.exports = router;

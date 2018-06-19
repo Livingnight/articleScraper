@@ -33,7 +33,7 @@ router.get('/api/scrape', (req, res) => {
                     if (err) console.error(err);
                     else {
                         console.log(inserted);
-                        // res.json(inserted);
+                        res.json(inserted);
                     }
                 });
             }
@@ -112,7 +112,10 @@ router.delete('/api/articles/:_id', (req, res) => {
                 {new: true})
                 .then( noteRemovedFromArticle => {
                     console.log(`note from article: ${JSON.stringify(noteRemovedFromArticle.notes)}`);
-                })
+                    res.json(noteRemovedFromArticle);
+                }).catch( err => {
+                    console.log(err);
+            })
 
         }).catch( (err) => {
             if(err) console.log(err);

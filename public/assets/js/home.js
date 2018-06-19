@@ -128,7 +128,7 @@ $(document).ready(() => {
             method: `DELETE`,
             data: data
         }).then( deleteInfo => {
-            console.log(`Delete info: ${deleteInfo}`);
+            console.log(`Delete info: ${JSON.stringify(deleteInfo.notes)}`);
             window.location.href = '/saved';
         })
     })

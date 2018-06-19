@@ -98,8 +98,25 @@ router.put('/api/article/:_id', (req, res) => {
         })
 });
 
-router.delete('/api/article:_id', (req, res) => {
-    db.Article.deleteOne({_id: req.params._id},)
+router.delete('/api/articles/:_id', (req, res) => {
+    console.log(`body: ${JSON.stringify(req.body)}`)
+    const ObjectId = require('mongoose').Types.ObjectId;
+    const query = { article_id: new ObjectId(req.body.article_id), note_id: new ObjectId(req.body.note_id)};
+    console.log(`Query: ${query}`);
+    db.Note.findByIdAndRemove({_id: query.note_id})
+        .then( removedNote =>{
+            console.log(`Removed: ${JSON.stringify(removedNote)}`);
+            db.Article.findOneAndUpdate(
+                {_id: query.article_id},
+                {$pull: {notes: query.note_id}},
+                {new: true})
+                .then( noteRemovedFromArticle => {
+                    console.log(`note from article: ${JSON.stringify(noteRemovedFromArticle.notes)}`);
+                })
+
+        }).catch( (err) => {
+            if(err) console.log(err);
+    });
 });
 
 router.get('/saved', (req, res) => {
@@ -112,9 +129,4 @@ router.get('/saved', (req, res) => {
     });
 });
 
-// router.post('/api/notes', (req, res) => {
-//     db.Article.insert({noteText: req.body.note}).then(note => {
-//         res.json(note);
-//     })
-// });
 module.exports = router;

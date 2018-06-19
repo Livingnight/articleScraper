@@ -3,11 +3,15 @@ $(document).ready(() => {
 
     const postScrapeData = () => {
         console.log('function triggered');
-        $.get('/api/scrape').then(data => {
-            console.log(data);
-            console.log('get route worked');
-            window.location.href = '/';
-        });
+        $.get('/api/scrape')
+            .then(data => {
+                console.log(data);
+                console.log('get route worked');
+                window.location.href = '/';
+
+            }).catch(err => {
+            console.log(err);
+        })
     };
     const toggleSaveArticle = articleId => {
         $.ajax({
@@ -63,19 +67,20 @@ $(document).ready(() => {
             data: data
         }).then(notes => {
             $('#saveNote').attr('data-id', id);
-            // console.log(`Notes: ${JSON.stringify(notes)}`);
-            // console.log(`id: ${id}`);
             const note_area = $('.saved-notes');
-            // console.log(`notes: ${notes}`);
+            note_area.empty();
+
             notes.forEach(note => {
 
-                console.log(`Note: ${JSON.stringify(note.notes)}`);
-                note.notes.forEach(id => {
-                    console.log(`id: ${JSON.stringify(id)}`);
-                    // note_area.empty();
+                note.notes.forEach( noteId => {
+                    console.log(`id: ${JSON.stringify(noteId)}`);
                     note_area
                         .append(
-                            `<p id="${id._id}">${id.noteText}</p>`
+                            `<div class="card" id="${id}">
+                                <card class="card-body">${noteId.noteText}</card>
+                                <button class="btn btn-alarm float-right" data-noteId="${id}" data-id="${noteId._id}" 
+                                id="note-delete">Delete</button>
+                                </div>`
                         );
                 })
 
@@ -107,6 +112,26 @@ $(document).ready(() => {
             console.log(err);
         })
     });
+
+    $(document).on('click', '#note-delete', function() {
+        const note_id = $(this).attr('data-id');
+        const article_id = $(this).attr('data-noteid');
+        const data = {
+            note_id: note_id,
+            article_id: article_id
+        };
+
+
+        console.log(`note id: ${note_id}, article id: ${article_id}`);
+        $.ajax({
+            url: `/api/articles/${note_id}`,
+            method: `DELETE`,
+            data: data
+        }).then( deleteInfo => {
+            console.log(`Delete info: ${deleteInfo}`);
+            window.location.href = '/saved';
+        })
+    })
 
 
 });
